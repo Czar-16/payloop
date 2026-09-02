@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OnRampStatus {
+  Processing
+  Success
+  Failed
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  name               String
+  email              String?             @unique
+  phone              String?             @unique
+  password           String
+  balance            Balance?
+  onRampTransactions OnRampTransaction[]
+}
+
+model Balance {
+  id        String @id @default(uuid())
+  userId    String @unique
+  available Int    @default(0)
+  locked    Int    @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model OnRampTransaction {
+  id     String       @id @default(uuid())
+  userId String
+  amount Int
+  status OnRampStatus @default(Processing)
+  token  String       @unique
+
+  user User @relation(fields: [userId], references: [id])
+}
