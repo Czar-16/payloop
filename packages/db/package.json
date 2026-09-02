@@ -1,0 +1,22 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.10.0",
+    "dotenv": "^16.0.3",
+    "prisma": "^7.10.0"
+  }
+}
