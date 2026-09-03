@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ButtonProps {
-  children: React.ReactNode;
+  children: React.ReactNode; // whatever you want to put inside the button eg ; click me
   onclick?: () => void;
   type?: "button" | "submit" | "reset";
 }
