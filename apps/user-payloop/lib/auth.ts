@@ -19,26 +19,31 @@ const nextAuth = NextAuth({
             password: z.string().min(3),
           })
           .safeParse(credentials);
-        if (!parsedCredentials) {
+
+        if (!parsedCredentials.success) {
           return null;
         }
-        const { identifier, password }: any = parsedCredentials.data;
+
+        const { identifier, password } = parsedCredentials.data;
+
         const user = await db.user.findFirst({
           where: {
             OR: [{ email: identifier }, { phone: identifier }],
           },
         });
+
         if (!user) {
           return null;
         }
 
         const passwordValid = await argon2.verify(user.password, password);
+
         if (!passwordValid) {
           return null;
         }
-        console.log(identifier, password);
+        // console.log(identifier, password);
 
-        console.log(db);
+        // console.log(db);
         // console.log(credentials);
 
         return {
@@ -53,6 +58,24 @@ const nextAuth = NextAuth({
 
   session: {
     strategy: "jwt",
+  },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (typeof token.id === "string") {
+        session.user.id = token.id;
+      }
+
+      return session;
+    },
   },
 });
 
