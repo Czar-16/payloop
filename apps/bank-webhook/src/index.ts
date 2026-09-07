@@ -1,23 +1,28 @@
+import axios from "axios";
 import { db } from "db";
 import express from "express";
 
 const app = express();
 app.use(express.json());
 
-app.get("/health", async (req, res) => {
+app.post("/simulate-payment", async (req, res) => {
   try {
-    await db.$queryRaw`SELECT 1`;
+    const { token, status } = req.body;
 
-    res.json({
-      status: "ok",
-      database: "connected",
+    const response = await axios.post("http://localhost:3000/api/webhook", {
+      token,
+      status,
+    });
+
+    return res.json({
+      token,
+      status,
     });
   } catch (error) {
     console.error(error);
 
-    res.status(500).json({
-      status: "error",
-      database: "disconnected",
+    return res.status(500).json({
+      error: "Something went wrong",
     });
   }
 });
