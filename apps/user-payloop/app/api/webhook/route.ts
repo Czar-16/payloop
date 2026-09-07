@@ -1,6 +1,5 @@
 import { db } from "db";
 import { NextRequest, NextResponse } from "next/server";
-
 import { z } from "zod";
 
 const webhookSchema = z.object({
@@ -22,53 +21,94 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const { token, status } = parsed.data;
-    const transaction = await db.onRampTransaction.findUnique({
-      where: {
-        token,
-      },
+
+    const result = await db.$transaction(async (tx) => {
+      // 1. Find the transaction
+      const transaction = await tx.onRampTransaction.findUnique({
+        where: {
+          token,
+        },
+      });
+
+      if (!transaction) {
+        return {
+          type: "not_found" as const,
+        };
+      }
+
+      // 2. Only update transactions that are still Processing
+      const statusUpdate = await tx.onRampTransaction.updateMany({
+        where: {
+          token,
+          status: "Processing",
+        },
+        data: {
+          status,
+        },
+      });
+
+      // 3. If nothing was updated, this webhook was already processed
+      if (statusUpdate.count === 0) {
+        return {
+          type: "already_processed" as const,
+          transaction,
+        };
+      }
+
+      // 4. Only successful transactions should add money
+      if (status === "Success") {
+        await tx.balance.update({
+          where: {
+            userId: transaction.userId,
+          },
+          data: {
+            available: {
+              increment: transaction.amount,
+            },
+          },
+        });
+      }
+
+      return {
+        type: "updated" as const,
+        transaction,
+      };
     });
 
-    if (!transaction) {
+    if (result.type === "not_found") {
       return NextResponse.json(
         { error: "Transaction not found" },
         { status: 404 },
       );
     }
 
-    const updates = await db.onRampTransaction.updateMany({
-      where: {
-        token,
-        status: "Processing",
-      },
-      data: {
-        status,
-      },
-    });
-
-    if (updates.count === 0) {
+    if (result.type === "already_processed") {
       return NextResponse.json({
         message: "Transaction already processed",
-        transactionId: transaction.id,
-        amount: transaction.amount,
-        status: transaction.status,
+        transactionId: result.transaction.id,
+        amount: result.transaction.amount,
+        status: result.transaction.status,
       });
     }
 
-    console.log("Webhook received", { token, status });
+    console.log("Webhook received", {
+      token,
+      status,
+      transactionId: result.transaction.id,
+    });
 
     return NextResponse.json({
       message: "Transaction updated",
-      transactionId: transaction.id,
-      amount: transaction.amount,
+      transactionId: result.transaction.id,
+      amount: result.transaction.amount,
       status,
     });
   } catch (error) {
-    console.log("Webhook error: ", error);
+    console.error("Webhook error:", error);
+
     return NextResponse.json(
-      {
-        error: "Invalid request",
-      },
-      { status: 400 },
+      { error: "Something went wrong" },
+      { status: 500 },
     );
   }
 }
