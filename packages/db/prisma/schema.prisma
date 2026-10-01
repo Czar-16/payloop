@@ -15,14 +15,22 @@ enum OnRampStatus {
   Failed
 }
 
+enum TransferStatus {
+  Success
+  Failed
+}
+
 model User {
-  id                 String              @id @default(uuid())
+  id                 String                @id @default(uuid())
   name               String
-  email              String?             @unique
-  phone              String?             @unique
+  email              String?               @unique
+  phone              String?               @unique
   password           String
+  createdAt          DateTime              @default(now())
   balance            Balance?
   onRampTransactions OnRampTransaction[]
+  sentTransfers      TransferTransaction[] @relation("SentTransfers")
+  receivedTransfers  TransferTransaction[] @relation("ReceivedTransfers")
 }
 
 model Balance {
@@ -35,11 +43,29 @@ model Balance {
 }
 
 model OnRampTransaction {
-  id     String       @id @default(uuid())
-  userId String
-  amount Int
-  status OnRampStatus @default(Processing)
-  token  String       @unique
+  id        String       @id @default(uuid())
+  userId    String
+  amount    Int
+  status    OnRampStatus @default(Processing)
+  token     String       @unique
+  createdAt DateTime     @default(now())
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model TransferTransaction {
+  id         String         @id @default(uuid())
+  senderId   String
+  receiverId String
+  amount     Int
+  status     TransferStatus @default(Success)
+  createdAt  DateTime       @default(now())
+
+  sender   User @relation("SentTransfers", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedTransfers", fields: [receiverId], references: [id])
+
+  @@index([senderId])
+  @@index([receiverId])
 }

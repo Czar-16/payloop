@@ -40,6 +40,7 @@ export type OnRampTransactionMinAggregateOutputType = {
   amount: number | null
   status: $Enums.OnRampStatus | null
   token: string | null
+  createdAt: Date | null
 }
 
 export type OnRampTransactionMaxAggregateOutputType = {
@@ -48,6 +49,7 @@ export type OnRampTransactionMaxAggregateOutputType = {
   amount: number | null
   status: $Enums.OnRampStatus | null
   token: string | null
+  createdAt: Date | null
 }
 
 export type OnRampTransactionCountAggregateOutputType = {
@@ -56,6 +58,7 @@ export type OnRampTransactionCountAggregateOutputType = {
   amount: number
   status: number
   token: number
+  createdAt: number
   _all: number
 }
 
@@ -74,6 +77,7 @@ export type OnRampTransactionMinAggregateInputType = {
   amount?: true
   status?: true
   token?: true
+  createdAt?: true
 }
 
 export type OnRampTransactionMaxAggregateInputType = {
@@ -82,6 +86,7 @@ export type OnRampTransactionMaxAggregateInputType = {
   amount?: true
   status?: true
   token?: true
+  createdAt?: true
 }
 
 export type OnRampTransactionCountAggregateInputType = {
@@ -90,6 +95,7 @@ export type OnRampTransactionCountAggregateInputType = {
   amount?: true
   status?: true
   token?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -185,6 +191,7 @@ export type OnRampTransactionGroupByOutputType = {
   amount: number
   status: $Enums.OnRampStatus
   token: string
+  createdAt: Date
   _count: OnRampTransactionCountAggregateOutputType | null
   _avg: OnRampTransactionAvgAggregateOutputType | null
   _sum: OnRampTransactionSumAggregateOutputType | null
@@ -216,6 +223,7 @@ export type OnRampTransactionWhereInput = {
   amount?: Prisma.IntFilter<"OnRampTransaction"> | number
   status?: Prisma.EnumOnRampStatusFilter<"OnRampTransaction"> | $Enums.OnRampStatus
   token?: Prisma.StringFilter<"OnRampTransaction"> | string
+  createdAt?: Prisma.DateTimeFilter<"OnRampTransaction"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -225,6 +233,7 @@ export type OnRampTransactionOrderByWithRelationInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -237,6 +246,7 @@ export type OnRampTransactionWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"OnRampTransaction"> | string
   amount?: Prisma.IntFilter<"OnRampTransaction"> | number
   status?: Prisma.EnumOnRampStatusFilter<"OnRampTransaction"> | $Enums.OnRampStatus
+  createdAt?: Prisma.DateTimeFilter<"OnRampTransaction"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "token">
 
@@ -246,6 +256,7 @@ export type OnRampTransactionOrderByWithAggregationInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.OnRampTransactionCountOrderByAggregateInput
   _avg?: Prisma.OnRampTransactionAvgOrderByAggregateInput
   _max?: Prisma.OnRampTransactionMaxOrderByAggregateInput
@@ -262,6 +273,7 @@ export type OnRampTransactionScalarWhereWithAggregatesInput = {
   amount?: Prisma.IntWithAggregatesFilter<"OnRampTransaction"> | number
   status?: Prisma.EnumOnRampStatusWithAggregatesFilter<"OnRampTransaction"> | $Enums.OnRampStatus
   token?: Prisma.StringWithAggregatesFilter<"OnRampTransaction"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"OnRampTransaction"> | Date | string
 }
 
 export type OnRampTransactionCreateInput = {
@@ -269,6 +281,7 @@ export type OnRampTransactionCreateInput = {
   amount: number
   status?: $Enums.OnRampStatus
   token: string
+  createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutOnRampTransactionsInput
 }
 
@@ -278,6 +291,7 @@ export type OnRampTransactionUncheckedCreateInput = {
   amount: number
   status?: $Enums.OnRampStatus
   token: string
+  createdAt?: Date | string
 }
 
 export type OnRampTransactionUpdateInput = {
@@ -285,6 +299,7 @@ export type OnRampTransactionUpdateInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutOnRampTransactionsNestedInput
 }
 
@@ -294,6 +309,7 @@ export type OnRampTransactionUncheckedUpdateInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OnRampTransactionCreateManyInput = {
@@ -302,6 +318,7 @@ export type OnRampTransactionCreateManyInput = {
   amount: number
   status?: $Enums.OnRampStatus
   token: string
+  createdAt?: Date | string
 }
 
 export type OnRampTransactionUpdateManyMutationInput = {
@@ -309,6 +326,7 @@ export type OnRampTransactionUpdateManyMutationInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OnRampTransactionUncheckedUpdateManyInput = {
@@ -317,6 +335,7 @@ export type OnRampTransactionUncheckedUpdateManyInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OnRampTransactionListRelationFilter = {
@@ -335,6 +354,7 @@ export type OnRampTransactionCountOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type OnRampTransactionAvgOrderByAggregateInput = {
@@ -347,6 +367,7 @@ export type OnRampTransactionMaxOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type OnRampTransactionMinOrderByAggregateInput = {
@@ -355,6 +376,7 @@ export type OnRampTransactionMinOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type OnRampTransactionSumOrderByAggregateInput = {
@@ -412,6 +434,7 @@ export type OnRampTransactionCreateWithoutUserInput = {
   amount: number
   status?: $Enums.OnRampStatus
   token: string
+  createdAt?: Date | string
 }
 
 export type OnRampTransactionUncheckedCreateWithoutUserInput = {
@@ -419,6 +442,7 @@ export type OnRampTransactionUncheckedCreateWithoutUserInput = {
   amount: number
   status?: $Enums.OnRampStatus
   token: string
+  createdAt?: Date | string
 }
 
 export type OnRampTransactionCreateOrConnectWithoutUserInput = {
@@ -456,6 +480,7 @@ export type OnRampTransactionScalarWhereInput = {
   amount?: Prisma.IntFilter<"OnRampTransaction"> | number
   status?: Prisma.EnumOnRampStatusFilter<"OnRampTransaction"> | $Enums.OnRampStatus
   token?: Prisma.StringFilter<"OnRampTransaction"> | string
+  createdAt?: Prisma.DateTimeFilter<"OnRampTransaction"> | Date | string
 }
 
 export type OnRampTransactionCreateManyUserInput = {
@@ -463,6 +488,7 @@ export type OnRampTransactionCreateManyUserInput = {
   amount: number
   status?: $Enums.OnRampStatus
   token: string
+  createdAt?: Date | string
 }
 
 export type OnRampTransactionUpdateWithoutUserInput = {
@@ -470,6 +496,7 @@ export type OnRampTransactionUpdateWithoutUserInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OnRampTransactionUncheckedUpdateWithoutUserInput = {
@@ -477,6 +504,7 @@ export type OnRampTransactionUncheckedUpdateWithoutUserInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OnRampTransactionUncheckedUpdateManyWithoutUserInput = {
@@ -484,6 +512,7 @@ export type OnRampTransactionUncheckedUpdateManyWithoutUserInput = {
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumOnRampStatusFieldUpdateOperationsInput | $Enums.OnRampStatus
   token?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -494,6 +523,7 @@ export type OnRampTransactionSelect<ExtArgs extends runtime.Types.Extensions.Int
   amount?: boolean
   status?: boolean
   token?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onRampTransaction"]>
 
@@ -503,6 +533,7 @@ export type OnRampTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.T
   amount?: boolean
   status?: boolean
   token?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onRampTransaction"]>
 
@@ -512,6 +543,7 @@ export type OnRampTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   amount?: boolean
   status?: boolean
   token?: boolean
+  createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onRampTransaction"]>
 
@@ -521,9 +553,10 @@ export type OnRampTransactionSelectScalar = {
   amount?: boolean
   status?: boolean
   token?: boolean
+  createdAt?: boolean
 }
 
-export type OnRampTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "amount" | "status" | "token", ExtArgs["result"]["onRampTransaction"]>
+export type OnRampTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "amount" | "status" | "token" | "createdAt", ExtArgs["result"]["onRampTransaction"]>
 export type OnRampTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -545,6 +578,7 @@ export type $OnRampTransactionPayload<ExtArgs extends runtime.Types.Extensions.I
     amount: number
     status: $Enums.OnRampStatus
     token: string
+    createdAt: Date
   }, ExtArgs["result"]["onRampTransaction"]>
   composites: {}
 }
@@ -974,6 +1008,7 @@ export interface OnRampTransactionFieldRefs {
   readonly amount: Prisma.FieldRef<"OnRampTransaction", 'Int'>
   readonly status: Prisma.FieldRef<"OnRampTransaction", 'OnRampStatus'>
   readonly token: Prisma.FieldRef<"OnRampTransaction", 'String'>
+  readonly createdAt: Prisma.FieldRef<"OnRampTransaction", 'DateTime'>
 }
     
 

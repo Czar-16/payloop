@@ -1,44 +1,53 @@
-import { Appbar } from "@repo/ui/appbar";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { AppbarWrapper } from "@/components/AppbarWrapper";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
+  if (!session || !session.user?.id) {
+    redirect("/login");
+  }
+
   return (
     <div className="min-h-screen">
-      <Appbar user={{ name: "Czar16" }} />
+      <AppbarWrapper user={session.user} />
 
       <div className="flex">
-        <aside className="w-56 border-r p-4">
+        <aside className="w-56 border-r p-4 min-h-[calc(100vh-65px)]">
           <nav className="flex flex-col gap-2">
-            <a
+            <Link
               href="/dashboard"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
             >
               Dashboard
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/dashboard/add-money"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
             >
               Add Money
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/dashboard/transfer"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
             >
               Transfer
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/dashboard/transactions"
               className="rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
             >
               Transactions
-            </a>
+            </Link>
           </nav>
         </aside>
 

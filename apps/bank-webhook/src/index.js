@@ -1,35 +1,29 @@
 import crypto from "crypto";
 import axios from "axios";
-import express, { Request, Response } from "express";
+import express from "express";
 import { z } from "zod";
-
 const app = express();
 app.use(express.json());
-
-app.use((_req: Request, res: Response, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  if (_req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
+app.use((_req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    if (_req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+    next();
 });
-
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "bank_webhook_secret_key";
 const WEBHOOK_URL = process.env.WEBHOOK_URL || "http://localhost:3000/api/webhook";
-
 const simulatePaymentSchema = z.object({
-  token: z.string().min(1, "Token is required"),
-  status: z.enum(["Success", "Failed"], {
-    errorMap: () => ({ message: "Status must be 'Success' or 'Failed'" }),
-  }),
+    token: z.string().min(1, "Token is required"),
+    status: z.enum(["Success", "Failed"], {
+        errorMap: () => ({ message: "Status must be 'Success' or 'Failed'" }),
+    }),
 });
-
-app.get("/health", (_req: Request, res: Response) => {
-  return res.json({ status: "ok", service: "bank-webhook" });
+app.get("/health", (_req, res) => {
+    return res.json({ status: "ok", service: "bank-webhook" });
 });
-
 const htmlPage = `
 <!DOCTYPE html>
 <html>
@@ -100,65 +94,55 @@ const htmlPage = `
 </body>
 </html>
 `;
-
-app.get("/", (_req: Request, res: Response) => {
-  res.setHeader("Content-Type", "text/html");
-  return res.send(htmlPage);
+app.get("/", (_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    return res.send(htmlPage);
 });
-
-app.get("/simulate-payment", (_req: Request, res: Response) => {
-  res.setHeader("Content-Type", "text/html");
-  return res.send(htmlPage);
+app.get("/simulate-payment", (_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    return res.send(htmlPage);
 });
-
-app.post("/simulate-payment", async (req: Request, res: Response) => {
-  const parsed = simulatePaymentSchema.safeParse(req.body);
-
-  if (!parsed.success) {
-    return res.status(400).json({
-      error: "Invalid input",
-      details: parsed.error.format(),
-    });
-  }
-
-  const { token, status } = parsed.data;
-  const payload = { token, status };
-  const payloadString = JSON.stringify(payload);
-
-  const signature = crypto
-    .createHmac("sha256", WEBHOOK_SECRET)
-    .update(payloadString)
-    .digest("hex");
-
-  try {
-    const response = await axios.post(WEBHOOK_URL, payload, {
-      headers: {
-        "Content-Type": "application/json",
-        "x-webhook-signature": signature,
-      },
-    });
-
-    return res.json({
-      message: "Payment simulated successfully",
-      bankResponse: response.data,
-    });
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      return res.status(error.response.status).json({
-        error: "Webhook rejected by Payloop",
-        bankResponse: error.response.data,
-      });
+app.post("/simulate-payment", async (req, res) => {
+    const parsed = simulatePaymentSchema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({
+            error: "Invalid input",
+            details: parsed.error.format(),
+        });
     }
-
-    console.error("Bank webhook simulation error:", error);
-
-    return res.status(500).json({
-      error: "Failed to connect to Payloop webhook",
-    });
-  }
+    const { token, status } = parsed.data;
+    const payload = { token, status };
+    const payloadString = JSON.stringify(payload);
+    const signature = crypto
+        .createHmac("sha256", WEBHOOK_SECRET)
+        .update(payloadString)
+        .digest("hex");
+    try {
+        const response = await axios.post(WEBHOOK_URL, payload, {
+            headers: {
+                "Content-Type": "application/json",
+                "x-webhook-signature": signature,
+            },
+        });
+        return res.json({
+            message: "Payment simulated successfully",
+            bankResponse: response.data,
+        });
+    }
+    catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return res.status(error.response.status).json({
+                error: "Webhook rejected by Payloop",
+                bankResponse: error.response.data,
+            });
+        }
+        console.error("Bank webhook simulation error:", error);
+        return res.status(500).json({
+            error: "Failed to connect to Payloop webhook",
+        });
+    }
 });
-
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Bank webhook server is running on port ${PORT}`);
+    console.log(`Bank webhook server is running on port ${PORT}`);
 });

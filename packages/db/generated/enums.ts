@@ -16,3 +16,11 @@ export const OnRampStatus = {
 } as const
 
 export type OnRampStatus = (typeof OnRampStatus)[keyof typeof OnRampStatus]
+
+
+export const TransferStatus = {
+  Success: 'Success',
+  Failed: 'Failed'
+} as const
+
+export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]

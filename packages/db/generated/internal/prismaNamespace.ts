@@ -399,7 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Balance: 'Balance',
-  OnRampTransaction: 'OnRampTransaction'
+  OnRampTransaction: 'OnRampTransaction',
+  TransferTransaction: 'TransferTransaction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "balance" | "onRampTransaction"
+    modelProps: "user" | "balance" | "onRampTransaction" | "transferTransaction"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -641,6 +642,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TransferTransaction: {
+      payload: Prisma.$TransferTransactionPayload<ExtArgs>
+      fields: Prisma.TransferTransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TransferTransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TransferTransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.TransferTransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TransferTransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>
+        }
+        findMany: {
+          args: Prisma.TransferTransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>[]
+        }
+        create: {
+          args: Prisma.TransferTransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>
+        }
+        createMany: {
+          args: Prisma.TransferTransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TransferTransactionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>[]
+        }
+        delete: {
+          args: Prisma.TransferTransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>
+        }
+        update: {
+          args: Prisma.TransferTransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.TransferTransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TransferTransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TransferTransactionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>[]
+        }
+        upsert: {
+          args: Prisma.TransferTransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TransferTransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.TransferTransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTransferTransaction>
+        }
+        groupBy: {
+          args: Prisma.TransferTransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TransferTransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TransferTransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TransferTransactionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -685,7 +760,8 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   phone: 'phone',
-  password: 'password'
+  password: 'password',
+  createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -706,10 +782,23 @@ export const OnRampTransactionScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
-  token: 'token'
+  token: 'token',
+  createdAt: 'createdAt'
 } as const
 
 export type OnRampTransactionScalarFieldEnum = (typeof OnRampTransactionScalarFieldEnum)[keyof typeof OnRampTransactionScalarFieldEnum]
+
+
+export const TransferTransactionScalarFieldEnum = {
+  id: 'id',
+  senderId: 'senderId',
+  receiverId: 'receiverId',
+  amount: 'amount',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type TransferTransactionScalarFieldEnum = (typeof TransferTransactionScalarFieldEnum)[keyof typeof TransferTransactionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -757,6 +846,20 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -781,6 +884,20 @@ export type EnumOnRampStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'OnRampStatus[]'
  */
 export type ListEnumOnRampStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnRampStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TransferStatus'
+ */
+export type EnumTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TransferStatus[]'
+ */
+export type ListEnumTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferStatus[]'>
     
 
 
@@ -951,6 +1068,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   balance?: Prisma.BalanceOmit
   onRampTransaction?: Prisma.OnRampTransactionOmit
+  transferTransaction?: Prisma.TransferTransactionOmit
 }
 
 /* Types for Logging */

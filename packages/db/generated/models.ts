@@ -11,4 +11,5 @@
 export type * from './models/User.ts'
 export type * from './models/Balance.ts'
 export type * from './models/OnRampTransaction.ts'
+export type * from './models/TransferTransaction.ts'
 export type * from './commonInputTypes.ts'

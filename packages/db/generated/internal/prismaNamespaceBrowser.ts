@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Balance: 'Balance',
-  OnRampTransaction: 'OnRampTransaction'
+  OnRampTransaction: 'OnRampTransaction',
+  TransferTransaction: 'TransferTransaction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,7 +78,8 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   phone: 'phone',
-  password: 'password'
+  password: 'password',
+  createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -98,10 +100,23 @@ export const OnRampTransactionScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
-  token: 'token'
+  token: 'token',
+  createdAt: 'createdAt'
 } as const
 
 export type OnRampTransactionScalarFieldEnum = (typeof OnRampTransactionScalarFieldEnum)[keyof typeof OnRampTransactionScalarFieldEnum]
+
+
+export const TransferTransactionScalarFieldEnum = {
+  id: 'id',
+  senderId: 'senderId',
+  receiverId: 'receiverId',
+  amount: 'amount',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type TransferTransactionScalarFieldEnum = (typeof TransferTransactionScalarFieldEnum)[keyof typeof TransferTransactionScalarFieldEnum]
 
 
 export const SortOrder = {

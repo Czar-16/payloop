@@ -56,3 +56,8 @@ export type Balance = Prisma.BalanceModel
  * 
  */
 export type OnRampTransaction = Prisma.OnRampTransactionModel
+/**
+ * Model TransferTransaction
+ * 
+ */
+export type TransferTransaction = Prisma.TransferTransactionModel

@@ -1,6 +1,9 @@
+import crypto from "crypto";
 import { db } from "db";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "bank_webhook_secret_key";
 
 const webhookSchema = z.object({
   token: z.string().min(1),
@@ -9,7 +12,43 @@ const webhookSchema = z.object({
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const body = await request.json();
+    const signature = request.headers.get("x-webhook-signature");
+    if (!signature) {
+      return NextResponse.json(
+        { error: "Missing signature header" },
+        { status: 401 },
+      );
+    }
+
+    const bodyText = await request.text();
+
+    const expectedSignature = crypto
+      .createHmac("sha256", WEBHOOK_SECRET)
+      .update(bodyText)
+      .digest("hex");
+
+    const signatureBuffer = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expectedSignature);
+
+    if (
+      signatureBuffer.length !== expectedBuffer.length ||
+      !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid webhook signature" },
+        { status: 401 },
+      );
+    }
+
+    let body: unknown;
+    try {
+      body = JSON.parse(bodyText);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid JSON body" },
+        { status: 400 },
+      );
+    }
 
     const parsed = webhookSchema.safeParse(body);
 
@@ -90,12 +129,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         status: result.transaction.status,
       });
     }
-
-    console.log("Webhook received", {
-      token,
-      status,
-      transactionId: result.transaction.id,
-    });
 
     return NextResponse.json({
       message: "Transaction updated",
