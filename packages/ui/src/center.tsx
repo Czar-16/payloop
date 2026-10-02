@@ -1,12 +1,22 @@
-import React from "react";
+import type { HTMLAttributes } from "react";
 
-interface CenterProps {
-  children: React.ReactNode;
+import { cn } from "./cn";
+
+export interface CenterProps extends HTMLAttributes<HTMLDivElement> {
+  /** Removes the full-height behaviour for nested centering. */
+  contained?: boolean;
 }
 
-export function Center({ children }: CenterProps) {
+export function Center({ contained = true, className, children, ...props }: CenterProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div
+      className={cn(
+        "flex items-center justify-center px-4 py-10",
+        contained && "min-h-dvh",
+        className,
+      )}
+      {...props}
+    >
       {children}
     </div>
   );

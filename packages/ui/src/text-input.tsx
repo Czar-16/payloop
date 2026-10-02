@@ -1,34 +1,86 @@
-import React from "react";
+import {
+  forwardRef,
+  useId,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react";
 
-interface TextInputProps {
-  label: string;
-  placeholder?: string;
-  type?: string;
-  name?: string;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+import { cn } from "./cn";
+import { Field, controlClasses } from "./field";
+
+export interface TextInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> {
+  label: ReactNode;
+  hint?: ReactNode;
+  error?: string | null;
+  /** Renders inside the field, before the text — e.g. a `₹` symbol. */
+  prefix?: ReactNode;
+  /** Renders inside the field, at the end — e.g. a show/hide toggle. */
+  suffix?: ReactNode;
+  containerClassName?: string;
 }
 
-export function TextInput({
-  label,
-  placeholder,
-  type = "text",
-  name,
-  value,
-  onChange,
-}: TextInputProps) {
-  return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{label}</label>
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+  function TextInput(
+    {
+      label,
+      hint,
+      error,
+      prefix,
+      suffix,
+      required,
+      containerClassName,
+      className,
+      id,
+      type = "text",
+      ...props
+    },
+    ref,
+  ) {
+    const generatedId = useId();
+    const inputId = id ?? generatedId;
+    const describedBy = error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined;
 
-      <input
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="rounded-md border px-3 py-2 outline-none focus:ring-2"
-      />
-    </div>
-  );
-}
+    return (
+      <Field
+        label={label}
+        htmlFor={inputId}
+        hint={hint}
+        error={error}
+        required={required}
+        className={containerClassName}
+      >
+        <div className="relative">
+          {prefix ? (
+            <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-sm font-medium text-fg-subtle">
+              {prefix}
+            </span>
+          ) : null}
+
+          <input
+            ref={ref}
+            id={inputId}
+            type={type}
+            required={required}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={describedBy}
+            className={cn(
+              controlClasses(Boolean(error)),
+              "h-9.5 px-3",
+              prefix && "pl-8",
+              suffix && "pr-10",
+              className,
+            )}
+            {...props}
+          />
+
+          {suffix ? (
+            <span className="absolute inset-y-0 right-0 flex items-center pr-1.5">
+              {suffix}
+            </span>
+          ) : null}
+        </div>
+      </Field>
+    );
+  },
+);

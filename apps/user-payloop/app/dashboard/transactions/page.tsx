@@ -2,11 +2,17 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "db";
 
-import { Card } from "@repo/ui/card";
+import { Badge, Card, PageHeader } from "@repo/ui/card";
+import { EmptyState } from "@repo/ui/empty-state";
+import { ArrowDownToLineIcon, ReceiptIcon, SendIcon } from "@repo/ui/icons";
+
+import { LinkButton } from "@/components/LinkButton";
+import { TransactionItem, type TransactionType } from "@/components/TransactionItem";
+import { formatCurrency } from "@/lib/format";
 
 interface CombinedTransaction {
   id: string;
-  type: "onramp" | "sent" | "received";
+  type: TransactionType;
   title: string;
   subtitle?: string;
   amount: number;
@@ -55,8 +61,8 @@ export default async function TransactionsPage() {
     transactions.push({
       id: item.id,
       type: "onramp",
-      title: "Money Added",
-      subtitle: "Bank On-ramp",
+      title: "Money added",
+      subtitle: "Bank on-ramp",
       amount: item.amount,
       status: item.status,
       createdAt: item.createdAt,
@@ -90,58 +96,83 @@ export default async function TransactionsPage() {
 
   transactions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
+  const moneyIn = transactions
+    .filter((tx) => tx.type !== "sent" && tx.status === "Success")
+    .reduce((total, tx) => total + tx.amount, 0);
+  const moneyOut = transactions
+    .filter((tx) => tx.type === "sent" && tx.status === "Success")
+    .reduce((total, tx) => total + tx.amount, 0);
+
   return (
-    <div>
-      <h2 className="mb-6 text-2xl font-bold">Transaction History</h2>
+    <div className="space-y-6">
+      <PageHeader
+        title="Transactions"
+        description="Every deposit, transfer in and transfer out — in one place."
+        actions={
+          <LinkButton
+            href="/dashboard/add-money"
+            startIcon={<ArrowDownToLineIcon size={16} />}
+          >
+            Add money
+          </LinkButton>
+        }
+      />
+
+      {transactions.length > 0 ? (
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl border border-line bg-surface px-4 py-3.5">
+            <p className="text-xs font-medium text-fg-muted">Total entries</p>
+            <p className="tabular mt-1 text-xl font-semibold tracking-[-0.01em] text-fg">
+              {transactions.length}
+            </p>
+          </div>
+          <div className="rounded-xl border border-line bg-surface px-4 py-3.5">
+            <p className="text-xs font-medium text-fg-muted">Money in</p>
+            <p className="tabular mt-1 text-xl font-semibold tracking-[-0.01em] text-positive-strong">
+              {formatCurrency(moneyIn)}
+            </p>
+          </div>
+          <div className="rounded-xl border border-line bg-surface px-4 py-3.5">
+            <p className="text-xs font-medium text-fg-muted">Money out</p>
+            <p className="tabular mt-1 text-xl font-semibold tracking-[-0.01em] text-fg">
+              {formatCurrency(moneyOut)}
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       {transactions.length === 0 ? (
-        <Card>
-          <p className="text-sm text-gray-500">No transactions yet.</p>
-        </Card>
+        <EmptyState
+          icon={ReceiptIcon}
+          title="No transactions yet"
+          description="Add money or send your first transfer and your full history will appear here."
+          action={
+            <LinkButton href="/dashboard/add-money" size="sm">
+              Add money
+            </LinkButton>
+          }
+          secondaryAction={
+            <LinkButton href="/dashboard/transfer" variant="secondary" size="sm">
+              Send to someone
+            </LinkButton>
+          }
+        />
       ) : (
-        <div className="flex flex-col gap-3">
-          {transactions.map((tx) => (
-            <Card key={tx.id}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-gray-900">{tx.title}</p>
-                  {tx.subtitle && (
-                    <p className="text-xs text-gray-500">{tx.subtitle}</p>
-                  )}
-                  {tx.reference && (
-                    <p className="mt-0.5 text-xs font-mono text-gray-400">
-                      Ref: {tx.reference}
-                    </p>
-                  )}
-                  <p className="mt-1 text-xs text-gray-400">
-                    {new Date(tx.createdAt).toLocaleString()}
-                  </p>
-                </div>
+        <Card flush>
+          <div className="flex items-center gap-4 border-b border-line px-4 py-3 sm:px-5">
+            <Badge tone="neutral">{transactions.length} total</Badge>
+            <span className="flex items-center gap-1.5 text-xs text-fg-subtle">
+              <SendIcon size={13} />
+              Newest first
+            </span>
+          </div>
 
-                <div className="text-right">
-                  <p
-                    className={`text-lg font-bold ${
-                      tx.type === "sent" ? "text-red-600" : "text-green-600"
-                    }`}
-                  >
-                    {tx.type === "sent" ? "-" : "+"}₹{tx.amount}
-                  </p>
-                  <span
-                    className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${
-                      tx.status === "Success"
-                        ? "bg-green-100 text-green-800"
-                        : tx.status === "Processing"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {tx.status}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+          <ul className="space-y-2.5 p-4 sm:p-5">
+            {transactions.map((tx) => (
+              <TransactionItem key={tx.id} {...tx} />
+            ))}
+          </ul>
+        </Card>
       )}
     </div>
   );
