@@ -18,15 +18,6 @@ Payloop is a full-stack digital wallet and payment application inspired by Paytm
 
 ## 📸 Screenshots
 
-| #   | Screen             | What it shows                                                           |
-| --- | ------------------ | ----------------------------------------------------------------------- |
-| 1   | Register           | Create an account with full name, email, phone and password             |
-| 2   | Login              | Sign in with email and password to reach the wallet                     |
-| 3   | Dashboard          | Available balance, locked amount, stats and recent activity             |
-| 4   | Add money          | Enter an amount, choose a bank, create the on-ramp transaction          |
-| 5   | Payment status     | Simulated bank result (approved / declined / pending) and payment token |
-| 6   | Transfer & history | Send money to a recipient by email or phone, and review the full ledger |
-
 **1. Landing Page**
 
 ![Home](apps/user-payloop/public/1.png)
